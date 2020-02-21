@@ -481,6 +481,10 @@ export default {
     url: '*://*.sentry.io/*',
     name: 'Sentry'
   },
+  'service-now.com': {
+    url: '*://*.service-now.com/*',
+    name: 'ServiceNow'
+  },
   'sifterapp.com': {
     url: '*://*.sifterapp.com/*',
     name: 'Sifterapp'
