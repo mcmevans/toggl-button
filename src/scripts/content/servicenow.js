@@ -9,11 +9,10 @@ if (iframe) {
     // #todo: check for iFrame and handle accordingly
     const targetDocument = document.getElementById('gsft_main').contentWindow.document;
     const targetElement = $('.navbar-right', targetDocument);
-    const description = getDescription(targetDocument);
     const link = togglbutton.createTimerLink({
       className: 'servicenow',
-      description: description,
-      projectName: '',
+      description: getDescription(targetDocument),
+      projectName: getProject(targetDocument),
       tags: ''
     });
     targetElement.classList.add('toggl');
@@ -29,7 +28,7 @@ if (iframe) {
         return getDescription();
       };
       const projectSelector = () => {
-        return '';
+        getProject();
       };
       const tagsSelector = () => {
         return [];
@@ -65,13 +64,30 @@ function getDescription (targetDocument) {
     $recordNumber = $recordNumberElement.value;
   }
   if ($recordNumber && $description.indexOf($recordNumber) === -1) {
-    $description = $recordNumber + ' ' + $description;
+    $description = $recordNumber + ' - ' + $description;
   } else if ($recordNumber === $description) {
     // Just Number isn't much help, append short_description if it's there
     const $shortDescriptionElement = targetDocument.getElementById(recordTableName + '.short_description');
     if ($shortDescriptionElement) {
-      $description = $description + ' ' + $shortDescriptionElement.value;
+      $description = $description + ' - ' + $shortDescriptionElement.value;
     }
   }
   return $description;
+}
+
+function getProject (targetDocument) {
+  // This allows us to handle the iFrame issue
+  targetDocument = targetDocument || document;
+  const recordTableName = $('.form_title', targetDocument).id.split('.')[0];
+  let projectName;
+  switch (recordTableName) {
+    case 'incident':
+    case 'sc_req_item':
+      projectName = 'ServiceNow Support';
+      break;
+    default:
+      projectName = 'ServiceNow Development';
+      break;
+  }
+  return projectName;
 }
